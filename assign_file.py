@@ -25,6 +25,9 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
                 print "Skipped %s" % item
             continue
 
+        if verbose:
+            print '\n%s' % item
+
         imgs = Soup(getattr(item, source_field)).findAll('img')
         if not imgs:
             if verbose:
@@ -65,7 +68,7 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
                 pass
 
         if verbose:
-            print "Downloaded to %s and assigned for %s" % (file_path, item)
+            print "Downloaded to %s" % (file_path)
 
     if verbose:
         print "Completed all %d %s items" % (items.count(), model.__name__)
