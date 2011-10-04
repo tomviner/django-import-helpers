@@ -37,6 +37,8 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
         img_src = None
         for i, img in enumerate(imgs):
             img_src = img['src']
+            if img.get('width', '')=='1' or img.get('height', '')=='1':
+                continue
             file_path = '/tmp/%s' % basename(img_src)
             with open(file_path, 'w') as fd:
                 try:
