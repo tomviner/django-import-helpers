@@ -45,7 +45,8 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
                         continue # to try next image
                 else:
                     if verbose:
-                        print 'Image number %s used' %(i+1)
+                        if i>0:
+                            print 'Image number %s used' %(i+1)
                     break # no need to look at further images
 
         if img_src is None:
