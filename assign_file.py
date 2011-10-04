@@ -25,10 +25,33 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
                 print "Skipped %s" % item
             continue
 
-        img_src = Soup(getattr(item, source_field)).find('img')['src']
-        file_path = '/tmp/%s' % basename(img_src)
-        with open(file_path, 'w') as fd:
-            fd.write(urllib2.urlopen(img_src).read())
+        imgs = Soup(getattr(item, source_field)).findAll('img')
+        if not imgs:
+            if verbose:
+                print 'No image found in source_field content'
+            continue
+
+        img_src = None
+        for i, img in enumerate(imgs):
+            img_src = img['src']
+            file_path = '/tmp/%s' % basename(img_src)
+            with open(file_path, 'w') as fd:
+                try:
+                    fd.write(urllib2.urlopen(img_src).read())
+                except urllib2.HTTPError, e:
+                    if e.code==404:
+                        if verbose:
+                            print 'Remote image number %d file not found' % (i+1)
+                        continue # to try next image
+                else:
+                    if verbose:
+                        print 'Image number %s used' %(i+1)
+                    break # no need to look at further images
+
+        if img_src is None:
+            if verbose:
+                print 'No working images found after looking through %d' % (i+1)
+            continue
 
         try:
             f = File(open(file_path))
