@@ -35,6 +35,7 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
             continue
 
         img_src = None
+        headers = {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'}
         for i, img in enumerate(imgs):
             img_src = img['src']
             if img.get('width', '')=='1' or img.get('height', '')=='1':
@@ -42,7 +43,8 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
             file_path = '/tmp/%s' % basename(img_src)
             with open(file_path, 'w') as fd:
                 try:
-                    fd.write(urllib2.urlopen(img_src).read())
+                    req = urllib2.Request(img_src, None, headers=headers)
+                    fd.write(urllib2.urlopen(req).read())
                 except urllib2.HTTPError, e:
                     if e.code==404:
                         if verbose:
