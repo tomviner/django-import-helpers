@@ -48,6 +48,8 @@ def assign_file_to_model(module, model_class=None, file_field='main_image', sour
                         if verbose:
                             print 'Remote image number %d file not found' % (i+1)
                         continue # to try next image
+                    else:
+                        raise e
                 else:
                     if verbose:
                         if i>0:
